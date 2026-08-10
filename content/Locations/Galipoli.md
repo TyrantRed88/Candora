@@ -1,18 +1,21 @@
 ---
-title: Meridian Station
+title: Galipoli
 
 tags:
   - locations
-  - stations
+  - planet
 
 location:
-  name: Meridian Station
-  type: Orbital Station
-  role: Trade Hub
+  name: Galipoli
+  type: Industrial Planet
+  role: Industry
   system: "[[Locations/Systems/Meridian|Meridian System]]"
   sector: "[[Locations/Sectors/Aurelian Reach|Aurelian Reach]]"
   authority: Independent
   status: Active
-  image: images/locations/port-meridian.jpg
+  image: images/locations/galipoli.jpg
 ---
 # Overview
+
+Galipoli is a major industrial center.
+
