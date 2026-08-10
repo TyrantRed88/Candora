@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
 configuration:
-  pageTitle: Quartz 5
+  pageTitle: BLACK DOGS ARCHIVE
   pageTitleSuffix: ""
   enableSPA: true
   enablePopovers: true
@@ -16,9 +16,10 @@ configuration:
     fontOrigin: googleFonts
     cdnCaching: true
     typography:
-      header: Schibsted Grotesk
-      body: Source Sans Pro
-      code: IBM Plex Mono
+      title: Rajdhani
+      header: Rajdhani
+      body: IBM Plex Sans
+      code: Share Tech Mono
     colors:
       lightMode:
         light: "#faf8f8"
@@ -58,6 +59,11 @@ plugins:
         dark: github-dark
       keepBackground: false
     order: 20
+  - source: ./plugins/black-dogs-dossiers
+    enabled: true
+    layout:
+      position: beforeBody
+      priority: 25
   - source: "@quartz-community/obsidian-flavored-markdown"
     enabled: true
     options:
@@ -69,7 +75,7 @@ plugins:
       parseTags: true
       parseArrows: true
       parseBlockReferences: true
-      enableInHtmlEmbed: false
+      enableInHtmlEmbed: true
       enableYouTubeEmbed: true
       enableVideoEmbed: true
       enableCheckbox: true

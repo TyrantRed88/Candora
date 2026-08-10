@@ -1,3 +1,1515 @@
 @use "./variables.scss" as *;
 
-// put your custom CSS here!
+/* =========================================================
+   BLACK DOGS / SHATTERPOINT
+   Quartz 5 custom theme
+   ========================================================= */
+
+
+/* =========================================================
+   DESIGN TOKENS
+   ========================================================= */
+
+:root {
+  --bd-bg: #030911;
+  --bd-bg-deep: #01050a;
+
+  --bd-panel: rgba(8, 21, 33, 0.88);
+  --bd-panel-soft: rgba(10, 27, 42, 0.72);
+  --bd-panel-deep: rgba(4, 13, 21, 0.88);
+
+  --bd-border: rgba(199, 208, 211, 0.72);
+  --bd-border-dim: rgba(106, 126, 139, 0.44);
+
+  --bd-text: #d6dde0;
+  --bd-text-bright: #f2f4f4;
+  --bd-muted: #8294a0;
+
+  --bd-blue: #75b6db;
+  --bd-blue-bright: #b7e3fa;
+
+  --bd-red: #f01b25;
+  --bd-red-dark: #98131a;
+
+  --bd-radius: 2px;
+}
+
+
+/* =========================================================
+   GLOBAL PAGE / BACKGROUND
+   ========================================================= */
+
+html,
+body {
+  background-color: var(--bd-bg-deep);
+}
+#quartz-body,
+.page,
+.center {
+  background: transparent !important;
+}
+body {
+  color: var(--bd-text);
+
+  background:
+    linear-gradient(rgba(1, 6, 12, 0.76), rgba(1, 6, 12, 0.76)),
+    url("/static/images/black-dogs-starfield-frame.jpg")
+      center / cover fixed no-repeat !important;
+
+  background-attachment: fixed;
+}
+
+.nav-file-title.tree-item-self.active.is-active,
+.nav-file-title.tree-item-self.active.is-active * {
+  color: var(--bd-text-bright) !important;
+}
+
+/* =========================================================
+   OUTER HUD FRAME
+   ========================================================= */
+
+body::before {
+  content: "";
+
+  position: fixed;
+  inset: 12px;
+
+  z-index: 9999;
+  pointer-events: none;
+
+  border: 1px solid rgba(205, 215, 218, 0.68);
+
+  clip-path: polygon(
+    0 18px,
+    18px 0,
+    32% 0,
+    calc(32% + 12px) 8px,
+    68% 8px,
+    calc(68% + 12px) 0,
+    calc(100% - 18px) 0,
+    100% 18px,
+    100% calc(100% - 18px),
+    calc(100% - 18px) 100%,
+    68% 100%,
+    calc(68% - 12px) calc(100% - 8px),
+    32% calc(100% - 8px),
+    calc(32% - 12px) 100%,
+    18px 100%,
+    0 calc(100% - 18px)
+  );
+
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 0 18px rgba(0, 0, 0, 0.42);
+}
+
+body::after {
+  content: "";
+
+  position: fixed;
+  inset: 0;
+
+  z-index: 10000;
+  pointer-events: none;
+
+  background:
+    linear-gradient(var(--bd-red), var(--bd-red))
+      22px 84px / 3px 20px no-repeat,
+
+    linear-gradient(var(--bd-red), var(--bd-red))
+      22px 108px / 3px 5px no-repeat,
+
+    linear-gradient(var(--bd-red), var(--bd-red))
+      calc(100% - 25px) 84px / 3px 20px no-repeat,
+
+    linear-gradient(var(--bd-red), var(--bd-red))
+      calc(100% - 25px) 108px / 3px 5px no-repeat,
+
+    repeating-linear-gradient(
+      125deg,
+      var(--bd-red) 0 4px,
+      transparent 4px 8px
+    )
+      30px calc(100% - 22px) / 36px 4px no-repeat,
+
+    repeating-linear-gradient(
+      125deg,
+      var(--bd-red) 0 4px,
+      transparent 4px 8px
+    )
+      calc(100% - 66px) calc(100% - 22px) / 36px 4px no-repeat;
+}
+
+#quartz-body::before,
+#quartz-body::after {
+  content: "";
+
+  position: fixed;
+
+  z-index: 9998;
+  width: 28px;
+  height: 28px;
+
+  pointer-events: none;
+  opacity: 0.72;
+}
+
+#quartz-body::before {
+  top: 24px;
+  left: 24px;
+
+  border-top: 1px solid var(--bd-border);
+  border-left: 1px solid var(--bd-border);
+}
+
+#quartz-body::after {
+  right: 24px;
+  bottom: 24px;
+
+  border-right: 1px solid var(--bd-border);
+  border-bottom: 1px solid var(--bd-border);
+}
+
+
+/* =========================================================
+   TYPOGRAPHY
+   ========================================================= */
+
+body,
+input,
+button {
+  font-family:
+    "IBM Plex Sans",
+    "Segoe UI",
+    sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.page-title,
+.explorer .title-button {
+  font-family:
+    "Rajdhani",
+    "Arial Narrow",
+    sans-serif;
+
+  text-transform: uppercase;
+  letter-spacing: 0.075em;
+
+  color: var(--bd-text-bright) !important;
+}
+
+h1 {
+  letter-spacing: 0.11em;
+  font-weight: 700;
+}
+
+h2 {
+  position: relative;
+
+  padding-bottom: 0.35rem;
+
+  border-bottom:
+    1px solid var(--bd-border-dim) !important;
+}
+
+h2::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+
+  width: 3.75rem;
+  height: 3px;
+
+  background: var(--bd-red);
+}
+
+h3 {
+  color: var(--bd-blue) !important;
+}
+
+p,
+li {
+  line-height: 1.65;
+}
+
+
+/* =========================================================
+   LEFT MASTHEAD
+   ========================================================= */
+
+.page-title {
+  position: relative;
+
+  display: block;
+
+  padding:
+    4.4rem
+    0
+    0.8rem
+    0;
+
+  margin-bottom: 1.5rem !important;
+
+  font-size: 1.65rem;
+  line-height: 0.95;
+
+  border-bottom:
+    1px solid rgba(199, 208, 211, 0.28);
+}
+
+.page-title::before {
+  content: "" !important;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: 3.8rem;
+  height: 3.8rem;
+
+  display: block;
+
+  background-image:
+    url("/static/images/black-dogs-logo.png") !important;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* Red registration line + subtitle */
+.page-title::after {
+  content: "PMC // INTELLIGENCE NETWORK";
+
+  display: block;
+
+  margin-top: 0.48rem;
+  padding-top: 0.45rem;
+
+  font-family:
+    "Share Tech Mono",
+    monospace;
+
+  font-size: 0.55rem;
+  line-height: 1.25;
+  font-weight: 400;
+
+  color: var(--bd-muted);
+
+  letter-spacing: 0.12em;
+
+  background:
+    linear-gradient(
+      var(--bd-red),
+      var(--bd-red)
+    )
+    left top / 3.25rem 3px no-repeat;
+}
+
+.page-title:hover {
+  color: var(--bd-blue-bright) !important;
+
+  text-shadow:
+    0 0 8px
+    rgba(117, 182, 219, 0.20);
+}
+
+.page-title:hover::before {
+  filter:
+    drop-shadow(
+      0 0 10px
+      rgba(240, 27, 37, 0.32)
+    );
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+a {
+  color: var(--bd-blue);
+
+  text-decoration-color:
+    rgba(117, 182, 219, 0.35);
+
+  transition:
+    color 120ms ease,
+    text-shadow 120ms ease;
+}
+
+a:hover {
+  color: var(--bd-blue-bright);
+
+  text-shadow:
+    0 0 8px rgba(117, 182, 219, 0.32);
+}
+
+
+/* =========================================================
+   MAIN ARTICLE / DOSSIER PANEL
+   ========================================================= */
+
+.page {
+  position: relative;
+}
+
+.center article {
+  position: relative;
+
+  padding: 1.5rem 1.75rem !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(7, 20, 31, 0.88),
+      rgba(3, 10, 17, 0.90)
+    ) !important;
+
+  border:
+    1px solid var(--bd-border-dim) !important;
+
+  border-radius: var(--bd-radius);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.5),
+    0 12px 35px rgba(0, 0, 0, 0.18);
+}
+
+.center article::before {
+  content: "";
+
+  position: absolute;
+  top: -1px;
+  left: 1.25rem;
+
+  width: 3.25rem;
+  height: 3px;
+
+  background:
+    repeating-linear-gradient(
+      120deg,
+      var(--bd-red) 0 7px,
+      transparent 7px 11px
+    );
+}
+
+.center article::after {
+  content: "";
+
+  position: absolute;
+  right: 10px;
+  top: 10px;
+
+  width: 22px;
+  height: 22px;
+
+  border-top:
+    1px solid var(--bd-border);
+
+  border-right:
+    1px solid var(--bd-border);
+
+  opacity: 0.5;
+
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   CLIPPED DOSSIER PANELS
+   ========================================================= */
+
+.explorer,
+.graph,
+.toc,
+.backlinks,
+.center article,
+.metadata {
+  position: relative;
+
+  clip-path: polygon(
+    0 10px,
+    10px 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    10px 100%,
+    0 calc(100% - 10px)
+  );
+}
+
+
+/* =========================================================
+   SIDEBARS
+   ========================================================= */
+
+.sidebar {
+  color: var(--bd-text);
+}
+
+.sidebar > * {
+  margin-bottom: 0.9rem;
+}
+
+.explorer,
+.toc,
+.backlinks,
+.graph {
+  background:
+    var(--bd-panel-soft) !important;
+
+  border:
+    1px solid var(--bd-border-dim) !important;
+
+  padding: 0.75rem 0.9rem;
+
+  box-shadow:
+    inset 0 0 18px rgba(0, 15, 27, 0.35);
+}
+
+
+/* =========================================================
+   EXPLORER
+   ========================================================= */
+
+.explorer::before {
+  content: "NAVIGATION //";
+
+  display: block;
+
+  margin-bottom: 0.65rem;
+  padding-bottom: 0.35rem;
+
+  font-family:
+    "Share Tech Mono",
+    monospace;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  letter-spacing: 0.13em;
+
+  color: var(--bd-red);
+
+  border-bottom:
+    1px solid var(--bd-border-dim);
+}
+
+.explorer .folder-container,
+.explorer .file-node {
+  font-size: 0.92rem;
+}
+
+.explorer a {
+  color: var(--bd-text) !important;
+}
+
+.explorer a:hover {
+  color: var(--bd-blue) !important;
+}
+
+/* Active note */
+.explorer ul.explorer-ul li a.active,
+.nav-file-title.tree-item-self.active.is-active {
+  background:
+    rgba(240, 27, 37, 0.16) !important;
+
+  border-left:
+    2px solid var(--bd-red) !important;
+
+  color:
+    var(--bd-text-bright) !important;
+}
+
+.explorer ul.explorer-ul li a.active *,
+.nav-file-title.tree-item-self.active.is-active * {
+  color:
+    var(--bd-text-bright) !important;
+}
+
+.explorer ul.explorer-ul li a.active:hover,
+.nav-file-title.tree-item-self.active.is-active:hover {
+  background:
+    rgba(240, 27, 37, 0.24) !important;
+}
+
+
+/* =========================================================
+   SEARCH / TOOLBAR
+   ========================================================= */
+
+.search,
+.breadcrumb-container,
+.metadata,
+.graph,
+.toc,
+.backlinks,
+footer {
+  font-family:
+    "Share Tech Mono",
+    monospace;
+}
+
+.search > .search-button,
+button,
+input {
+  border-radius: 0 !important;
+}
+
+.search > .search-button {
+  background:
+    rgba(6, 18, 29, 0.92) !important;
+
+  border:
+    1px solid var(--bd-border-dim) !important;
+
+  color:
+    var(--bd-muted) !important;
+}
+
+.search > .search-button:hover {
+  border-color:
+    var(--bd-border) !important;
+
+  color:
+    var(--bd-text-bright) !important;
+}
+
+
+/* =========================================================
+   BREADCRUMBS
+   ========================================================= */
+
+.breadcrumb-container {
+  font-size: 0.78rem;
+
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+
+  color: var(--bd-muted);
+}
+
+.breadcrumb-container a {
+  color: var(--bd-muted) !important;
+}
+
+.breadcrumb-container a:hover {
+  color: var(--bd-red) !important;
+}
+
+
+/* =========================================================
+   METADATA / PROPERTIES
+   ========================================================= */
+
+.metadata {
+  border:
+    1px solid var(--bd-border-dim) !important;
+
+  background:
+    rgba(5, 15, 24, 0.82) !important;
+}
+
+.metadata .metadata-properties-title {
+  color:
+    var(--bd-red) !important;
+
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+
+/* =========================================================
+   TAG PILLS
+   ========================================================= */
+
+html[saved-theme="dark"] {
+  --tag-background:
+    rgba(8, 25, 37, 0.92) !important;
+
+  --tag-color:
+    var(--bd-blue) !important;
+}
+
+html[saved-theme="dark"] body ul.tags > li {
+  --pill-background:
+    rgba(8, 25, 37, 0.92) !important;
+
+  --pill-color:
+    var(--bd-blue) !important;
+
+  background:
+    var(--pill-background) !important;
+
+  color:
+    var(--pill-color) !important;
+
+  border:
+    1px solid rgba(117, 182, 219, 0.35) !important;
+
+  border-radius:
+    0 !important;
+}
+
+html[saved-theme="dark"] body ul.tags > li a,
+a.tag-link {
+  color:
+    var(--bd-blue) !important;
+
+  background:
+    rgba(8, 25, 37, 0.92) !important;
+
+  border:
+    1px solid rgba(117, 182, 219, 0.35) !important;
+
+  border-radius:
+    0 !important;
+
+  padding:
+    0.12rem 0.45rem;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.04em;
+
+  font-size:
+    0.72rem;
+}
+
+
+/* =========================================================
+   GRAPH / TOC / BACKLINKS
+   ========================================================= */
+
+.graph {
+  background:
+    rgba(7, 19, 31, 0.82) !important;
+
+  border-color:
+    var(--bd-border-dim) !important;
+}
+
+.graph > h3,
+.graph .graph-title {
+  color:
+    var(--bd-blue) !important;
+}
+
+
+/* =========================================================
+   CALLOUTS
+   ========================================================= */
+
+.callout {
+  border-radius: 0;
+
+  border:
+    1px solid var(--bd-border-dim);
+
+  border-left:
+    3px solid var(--bd-blue);
+
+  background:
+    rgba(8, 23, 35, 0.82);
+
+  box-shadow:
+    inset 0 0 24px rgba(10, 50, 75, 0.12);
+}
+
+.callout-title {
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.07em;
+}
+
+.callout[data-callout="warning"],
+.callout[data-callout="danger"] {
+  border-left-color:
+    var(--bd-red);
+}
+
+
+/* =========================================================
+   BLOCKQUOTES
+   ========================================================= */
+
+blockquote {
+  margin-left: 0;
+
+  padding:
+    0.75rem 1rem;
+
+  color:
+    var(--bd-text);
+
+  background:
+    rgba(8, 23, 35, 0.55);
+
+  border-left:
+    2px solid var(--bd-red);
+}
+
+
+/* =========================================================
+   TABLES
+   ========================================================= */
+
+table {
+  width: 100%;
+
+  border-collapse:
+    collapse;
+
+  background:
+    rgba(4, 15, 24, 0.65);
+}
+
+th {
+  color:
+    var(--bd-blue);
+
+  background:
+    rgba(13, 35, 51, 0.85);
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.06em;
+}
+
+th,
+td {
+  border:
+    1px solid var(--bd-border-dim);
+
+  padding:
+    0.55rem 0.7rem;
+}
+
+
+/* =========================================================
+   CODE
+   ========================================================= */
+
+code,
+pre {
+  font-family:
+    "Share Tech Mono",
+    monospace;
+}
+
+code {
+  color:
+    #b9dcef;
+
+  background:
+    rgba(12, 34, 48, 0.8);
+}
+
+pre {
+  border:
+    1px solid var(--bd-border-dim);
+
+  border-radius:
+    0;
+}
+
+
+/* =========================================================
+   IMAGES
+   ========================================================= */
+
+article img {
+  border:
+    1px solid var(--bd-border-dim);
+
+  padding:
+    4px;
+
+  background:
+    rgba(0, 6, 12, 0.75);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.025),
+    0 0 18px rgba(0, 0, 0, 0.28);
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+  background: rgba(4, 12, 19, 0.42) !important;
+  border-top: 1px solid var(--bd-border-dim);
+  padding-top: 0.75rem;
+}
+
+footer a {
+  color:
+    var(--bd-blue) !important;
+}
+
+
+/* =========================================================
+   TEXT SELECTION / SCROLLBAR
+   ========================================================= */
+
+::selection {
+  background:
+    rgba(240, 27, 37, 0.42);
+
+  color:
+    white;
+}
+
+* {
+  scrollbar-color:
+    var(--bd-red-dark)
+    var(--bd-bg-deep);
+
+  scrollbar-width:
+    thin;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+  body::before {
+    inset: 6px;
+  }
+
+  body::after {
+    display: none;
+  }
+}
+
+@media (max-width: 800px) {
+  body::before,
+  body::after,
+  #quartz-body::before,
+  #quartz-body::after {
+    display: none;
+  }
+
+  .center article {
+    padding:
+      1rem !important;
+  }
+
+  .page-title {
+    font-size:
+      1.5rem;
+  }
+
+  .page-title::after {
+    font-size:
+      0.52rem;
+  }
+}
+.explorer .folder-title:hover,
+.explorer .folder-title:focus,
+.explorer .tree-item-self:hover {
+  background: rgba(117, 182, 219, 0.10) !important;
+  color: var(--bd-blue-bright) !important;
+}
+footer {
+  background: rgba(4, 12, 19, 0.42) !important;
+  border-top: 1px solid var(--bd-border-dim);
+  padding-top: 0.75rem;
+}
+
+
+@media (max-width: 800px) {
+  .page-title {
+    min-height: 3.25rem;
+
+    padding-left: 3.45rem;
+
+    font-size: 1.3rem;
+  }
+
+  .page-title::before {
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+
+  .page-title::after {
+    font-size: 0.48rem;
+  }
+}
+/* =========================================================
+   OPERATOR DOSSIER PAGE TYPE
+   ========================================================= */
+
+.dossier.operator .center article {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 16, 26, 0.84),
+      rgba(2, 8, 14, 0.90)
+    ) !important;
+}
+
+
+/* ---------------------------------------------------------
+   DOSSIER FRAME
+   --------------------------------------------------------- */
+
+.operator-dossier {
+  display: grid;
+
+  grid-template-columns:
+    minmax(150px, 175px)
+    minmax(0, 1fr)
+    120px;
+
+  gap: 1rem;
+
+  margin:
+    0
+    0
+    1.6rem;
+
+  padding:
+    1rem;
+
+  position: relative;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5, 17, 28, 0.86),
+      rgba(3, 11, 18, 0.82)
+    );
+
+  border:
+    1px solid var(--bd-border-dim);
+
+  clip-path: polygon(
+    0 12px,
+    12px 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    12px 100%,
+    0 calc(100% - 12px)
+  );
+
+  box-shadow:
+    inset 0 0 24px rgba(0, 17, 30, 0.45);
+}
+
+.operator-dossier::before {
+  content: "";
+
+  position: absolute;
+  top: -1px;
+  left: 1rem;
+
+  width: 4rem;
+  height: 3px;
+
+  background:
+    repeating-linear-gradient(
+      120deg,
+      var(--bd-red) 0 7px,
+      transparent 7px 11px
+    );
+}
+
+
+/* ---------------------------------------------------------
+   PORTRAIT
+   --------------------------------------------------------- */
+
+.operator-dossier__portrait {
+  display: flex;
+
+  align-items: stretch;
+
+  aspect-ratio:
+    4 / 5;
+
+  min-height: 0;
+
+  border:
+    1px solid var(--bd-border-dim);
+
+  background:
+    rgba(3, 12, 20, 0.80);
+
+  overflow: hidden;
+}
+
+.operator-dossier__portrait img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center top;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 0 !important;
+
+  background:
+    transparent !important;
+
+  box-shadow:
+    none !important;
+}
+
+
+/* ---------------------------------------------------------
+   IDENTITY CENTER BLOCK
+   --------------------------------------------------------- */
+
+.operator-dossier__identity {
+  min-width: 0;
+}
+
+.operator-dossier__eyebrow {
+  margin-bottom:
+    0.4rem;
+
+  font-family:
+    "Share Tech Mono",
+    monospace;
+
+  color:
+    var(--bd-red);
+
+  font-size:
+    0.68rem;
+
+  letter-spacing:
+    0.14em;
+
+  text-transform:
+    uppercase;
+}
+
+.operator-dossier__name {
+  margin-bottom:
+    1rem;
+
+  padding-bottom:
+    0.45rem;
+
+  position: relative;
+
+  font-family:
+    "Rajdhani",
+    "Arial Narrow",
+    sans-serif;
+
+  color:
+    var(--bd-text-bright);
+
+  font-size:
+    clamp(1.8rem, 3vw, 2.7rem);
+
+  line-height:
+    0.95;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    0.07em;
+
+  text-transform:
+    uppercase;
+
+  border-bottom:
+    1px solid var(--bd-border-dim);
+}
+
+.operator-dossier__name::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: -2px;
+
+  width:
+    4rem;
+
+  height:
+    3px;
+
+  background:
+    var(--bd-red);
+}
+
+
+/* ---------------------------------------------------------
+   IDENTITY FIELDS
+   --------------------------------------------------------- */
+
+.operator-dossier__grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap:
+    0.55rem
+    0.75rem;
+}
+
+.operator-dossier__grid > div {
+  display: grid;
+
+  grid-template-columns:
+    5.2rem
+    minmax(0, 1fr);
+
+  align-items:
+    center;
+
+  min-height:
+    2rem;
+
+  border:
+    1px solid var(--bd-border-dim);
+
+  background:
+    rgba(2, 10, 17, 0.72);
+}
+
+.operator-dossier__grid span {
+  padding:
+    0.35rem
+    0.45rem;
+
+  font-family:
+    "Share Tech Mono",
+    monospace;
+
+  font-size:
+    0.58rem;
+
+  letter-spacing:
+    0.08em;
+
+  color:
+    var(--bd-muted);
+
+  text-transform:
+    uppercase;
+}
+
+.operator-dossier__grid strong {
+  padding:
+    0.3rem
+    0.5rem;
+
+  font-family:
+    "Share Tech Mono",
+    monospace;
+
+  color:
+    #c7edff;
+
+  font-size:
+    0.9rem;
+
+  font-weight:
+    400;
+
+  letter-spacing:
+    0.12em;
+
+  text-transform:
+    uppercase;
+
+  border-left:
+    1px solid var(--bd-border-dim);
+
+  text-shadow:
+    0 0 7px rgba(117, 182, 219, 0.18);
+}
+
+
+/* ---------------------------------------------------------
+   BADGE / UNIT INSIGNIA
+   --------------------------------------------------------- */
+
+.operator-dossier__badge {
+  position: relative;
+
+  display: flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  align-self:
+    stretch;
+
+  min-width:
+    0;
+
+  padding:
+    1.55rem
+    0.65rem
+    0.65rem;
+
+  border:
+    1px solid var(--bd-border-dim);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2, 10, 17, 0.84),
+      rgba(1, 6, 11, 0.90)
+    );
+
+  overflow:
+    hidden;
+}
+
+.operator-dossier__badge::before {
+  content:
+    "UNIT INSIGNIA";
+
+  position:
+    absolute;
+
+  top:
+    0.45rem;
+
+  left:
+    0;
+
+  right:
+    0;
+
+  text-align:
+    center;
+
+  font-family:
+    "Share Tech Mono",
+    monospace;
+
+  font-size:
+    0.48rem;
+
+  letter-spacing:
+    0.12em;
+
+  color:
+    var(--bd-muted);
+
+  text-transform:
+    uppercase;
+}
+
+.operator-dossier__badge img {
+  display:
+    block;
+
+  width:
+    100%;
+
+  max-width:
+    94px;
+
+  height:
+    auto;
+
+  max-height:
+    none;
+
+  object-fit:
+    contain;
+
+  margin:
+    0 !important;
+
+  padding:
+    0 !important;
+
+  border:
+    0 !important;
+
+  background:
+    transparent !important;
+
+  box-shadow:
+    none !important;
+}
+
+
+/* =========================================================
+   DOSSIER ARTICLE SECTION HEADERS
+   ========================================================= */
+
+.dossier.operator article h2 {
+  margin-top:
+    1.8rem;
+
+  font-family:
+    "Rajdhani",
+    "Arial Narrow",
+    sans-serif;
+
+  color:
+    var(--bd-text-bright) !important;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.08em;
+}
+
+.dossier.operator article h3 {
+  font-family:
+    "Share Tech Mono",
+    monospace;
+
+  color:
+    var(--bd-blue) !important;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    0.07em;
+
+  font-size:
+    0.9rem;
+}
+
+
+/* =========================================================
+   DOSSIER RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+  .operator-dossier {
+    grid-template-columns:
+      150px
+      minmax(0, 1fr);
+  }
+
+  .operator-dossier__portrait {
+    aspect-ratio:
+      4 / 5;
+  }
+
+  .operator-dossier__badge {
+    grid-column:
+      1 / -1;
+
+    min-height:
+      92px;
+
+    padding:
+      1.4rem
+      0.75rem
+      0.55rem;
+  }
+
+  .operator-dossier__badge img {
+    width:
+      auto;
+
+    max-width:
+      90px;
+
+    max-height:
+      72px;
+  }
+}
+
+@media (max-width: 700px) {
+  .operator-dossier {
+    grid-template-columns:
+      1fr;
+  }
+
+  .operator-dossier__portrait {
+    width:
+      min(100%, 320px);
+
+    aspect-ratio:
+      4 / 5;
+
+    justify-self:
+      center;
+  }
+
+  .operator-dossier__grid {
+    grid-template-columns:
+      1fr;
+  }
+
+  .operator-dossier__badge {
+    grid-column:
+      auto;
+
+    min-height:
+      110px;
+  }
+
+  .operator-dossier__badge img {
+    max-width:
+      92px;
+
+    max-height:
+      80px;
+  }
+}
+/* ---------------------------------------------------------
+   OPERATOR DOSSIER PAGES
+   The dossier replaces the normal article header furniture.
+   --------------------------------------------------------- */
+
+body:has(.operator-dossier) {
+  /* ordinary ArticleTitle */
+  .article-title {
+    display: none;
+  }
+
+  /* Note Properties component */
+  .note-properties {
+    display: none;
+  }
+
+  /* Depending on the plugin's actual wrapper class */
+  .metadata {
+    &:has(.note-properties) {
+      display: none;
+    }
+  }
+}
