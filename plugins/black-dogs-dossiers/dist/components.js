@@ -11,13 +11,70 @@ function resolveStatic(path, slug) {
   const root = depth === 0 ? "." : Array(depth).fill("..").join("/");
   return `${root}/static/${cleanPath}`;
 }
+function resolvePage(target, slug) {
+  const cleanTarget = target.replace(/\.md$/i, "").replace(/^\/+/, "");
+  const currentSlug = slug ?? "";
+  const depth = Math.max(
+    0,
+    currentSlug.split("/").length - 1
+  );
+  const root = depth === 0 ? "." : Array(depth).fill("..").join("/");
+  return `${root}/${cleanTarget}`;
+}
+function parseDossierValue(value) {
+  if (!value) {
+    return void 0;
+  }
+  const match = value.match(
+    /^\[\[([^|\]]+)(?:\|([^\]]+))?\]\]$/
+  );
+  if (!match) {
+    return {
+      label: value
+    };
+  }
+  const target = match[1].trim();
+  const label = match[2]?.trim() ?? target.split("/").pop() ?? target;
+  return {
+    label,
+    target
+  };
+}
 function OperatorField({
   label,
-  value
+  value,
+  slug
 }) {
+  const parsed = parseDossierValue(value);
+  if (!parsed) {
+    return null;
+  }
   return /* @__PURE__ */ jsxs("div", { class: "operator-dossier__field", children: [
     /* @__PURE__ */ jsx("span", { children: label }),
-    /* @__PURE__ */ jsx("strong", { children: value ?? "\u2014" })
+    /* @__PURE__ */ jsx("strong", { children: parsed.target ? /* @__PURE__ */ jsx("a", { href: resolvePage(parsed.target, slug), children: parsed.label }) : parsed.label })
+  ] });
+}
+function StatusField({
+  value,
+  fieldClass
+}) {
+  const normalized = value?.trim().toLowerCase() ?? "unknown";
+  let statusClass = "status-unknown";
+  let statusText = "UNKNOWN";
+  if (normalized === "active") {
+    statusClass = "status-active";
+    statusText = "ACTIVE";
+  }
+  if (normalized === "inactive") {
+    statusClass = "status-inactive";
+    statusText = "INACTIVE";
+  }
+  return /* @__PURE__ */ jsxs("div", { class: `${fieldClass} dossier-field--status`, children: [
+    /* @__PURE__ */ jsx("span", { children: "STATUS" }),
+    /* @__PURE__ */ jsxs("strong", { class: `dossier-status ${statusClass}`, children: [
+      /* @__PURE__ */ jsx("i", { "aria-hidden": "true" }),
+      statusText
+    ] })
   ] });
 }
 function MechField({
@@ -32,13 +89,18 @@ function MechField({
     /* @__PURE__ */ jsx("strong", { children: value })
   ] });
 }
-function FrameField({
+function LocationField({
   label,
-  value
+  value,
+  slug
 }) {
-  return /* @__PURE__ */ jsxs("div", { class: "mech-dossier__frame-field", children: [
+  const parsed = parseDossierValue(value);
+  if (!parsed) {
+    return null;
+  }
+  return /* @__PURE__ */ jsxs("div", { class: "location-dossier__field", children: [
     /* @__PURE__ */ jsx("span", { children: label }),
-    /* @__PURE__ */ jsx("strong", { children: value ?? "\u2014" })
+    /* @__PURE__ */ jsx("strong", { children: parsed.target ? /* @__PURE__ */ jsx("a", { href: resolvePage(parsed.target, slug), children: parsed.label }) : parsed.label })
   ] });
 }
 function renderOperator(operator, frontmatter, slug) {
@@ -61,42 +123,63 @@ function renderOperator(operator, frontmatter, slug) {
           OperatorField,
           {
             label: "CALLSIGN",
-            value: operator.callsign
+            value: operator.callsign,
+            slug
           }
         ),
         /* @__PURE__ */ jsx(
           OperatorField,
           {
             label: "CLASS",
-            value: operator.class
+            value: operator.class,
+            slug
           }
         ),
         /* @__PURE__ */ jsx(
           OperatorField,
           {
             label: "SPECIES",
-            value: operator.species
+            value: operator.species,
+            slug
           }
         ),
         /* @__PURE__ */ jsx(
           OperatorField,
           {
             label: "RANK",
-            value: operator.rank
+            value: operator.rank,
+            slug
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          OperatorField,
+          {
+            label: "ORGANIZATION",
+            value: operator.organization,
+            slug
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          OperatorField,
+          {
+            label: "SHIP",
+            value: operator.ship,
+            slug
           }
         ),
         /* @__PURE__ */ jsx(
           OperatorField,
           {
             label: "MECH-ID",
-            value: operator.mech
+            value: operator.mech,
+            slug
           }
         ),
         /* @__PURE__ */ jsx(
-          OperatorField,
+          StatusField,
           {
-            label: "STATUS",
-            value: operator.status
+            value: operator.status,
+            fieldClass: "operator-dossier__field"
           }
         )
       ] })
@@ -115,13 +198,6 @@ function renderMech(mech, frontmatter, slug) {
   const image = resolveStatic(mech.image, slug);
   return /* @__PURE__ */ jsxs("section", { class: "black-dogs-dossier mech-dossier", children: [
     /* @__PURE__ */ jsx("div", { class: "mech-dossier__register", children: "BLACK DOGS PMC // MECH DOSSIER" }),
-    /* @__PURE__ */ jsx("div", { class: "mech-dossier__visual", children: image ? /* @__PURE__ */ jsx(
-      "img",
-      {
-        src: image,
-        alt: `${name} combat frame`
-      }
-    ) : /* @__PURE__ */ jsx("span", { class: "mech-dossier__no-visual", children: "NO VISUAL RECORD" }) }),
     /* @__PURE__ */ jsxs("div", { class: "mech-dossier__identity", children: [
       /* @__PURE__ */ jsx("div", { class: "mech-dossier__name", children: name }),
       /* @__PURE__ */ jsxs("div", { class: "mech-dossier__grid", children: [
@@ -142,63 +218,91 @@ function renderMech(mech, frontmatter, slug) {
         /* @__PURE__ */ jsx(
           MechField,
           {
-            label: "ROLE",
-            value: mech.role
-          }
-        ),
-        /* @__PURE__ */ jsx(
-          MechField,
-          {
-            label: "CLASS",
-            value: mech.class
-          }
-        ),
-        /* @__PURE__ */ jsx(
-          MechField,
-          {
             label: "AFFILIATION",
             value: mech.affiliation
           }
         ),
         /* @__PURE__ */ jsx(
-          MechField,
+          StatusField,
           {
-            label: "STATUS",
-            value: mech.status
+            value: mech.status,
+            fieldClass: "mech-dossier__field"
           }
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsxs("div", { class: "mech-dossier__frame", children: [
-      /* @__PURE__ */ jsx("div", { class: "mech-dossier__frame-title", children: "FRAME PROFILE" }),
-      /* @__PURE__ */ jsx(
-        FrameField,
-        {
-          label: "POWER",
-          value: mech.frame?.power
-        }
-      ),
-      /* @__PURE__ */ jsx(
-        FrameField,
-        {
-          label: "MOBILITY",
-          value: mech.frame?.mobility
-        }
-      ),
-      /* @__PURE__ */ jsx(
-        FrameField,
-        {
-          label: "SYSTEMS",
-          value: mech.frame?.systems
-        }
-      ),
-      /* @__PURE__ */ jsx(
-        FrameField,
-        {
-          label: "INTEGRITY",
-          value: mech.frame?.integrity
-        }
-      )
+    /* @__PURE__ */ jsx("div", { class: "mech-dossier__visual", children: image ? /* @__PURE__ */ jsx(
+      "img",
+      {
+        src: image,
+        alt: `${name} combat frame`
+      }
+    ) : /* @__PURE__ */ jsx("span", { class: "mech-dossier__no-visual", children: "NO VISUAL RECORD" }) })
+  ] });
+}
+function renderLocation(location, frontmatter, slug) {
+  const name = location.name ?? (typeof frontmatter.title === "string" ? frontmatter.title : "UNREGISTERED LOCATION");
+  const image = resolveStatic(location.image, slug);
+  return /* @__PURE__ */ jsxs("section", { class: "black-dogs-dossier location-dossier", children: [
+    /* @__PURE__ */ jsx("div", { class: "location-dossier__register", children: "BLACK DOGS PMC // LOCATION DOSSIER" }),
+    /* @__PURE__ */ jsx("div", { class: "location-dossier__visual", children: image ? /* @__PURE__ */ jsx(
+      "img",
+      {
+        src: image,
+        alt: `${name} survey record`
+      }
+    ) : /* @__PURE__ */ jsx("span", { class: "location-dossier__no-visual", children: "NO SURVEY IMAGE" }) }),
+    /* @__PURE__ */ jsxs("div", { class: "location-dossier__identity", children: [
+      /* @__PURE__ */ jsx("div", { class: "location-dossier__name", children: name }),
+      /* @__PURE__ */ jsxs("div", { class: "location-dossier__grid", children: [
+        /* @__PURE__ */ jsx(
+          LocationField,
+          {
+            label: "TYPE",
+            value: location.type,
+            slug
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          LocationField,
+          {
+            label: "ROLE",
+            value: location.role,
+            slug
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          LocationField,
+          {
+            label: "SYSTEM",
+            value: location.system,
+            slug
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          LocationField,
+          {
+            label: "SECTOR",
+            value: location.sector,
+            slug
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          LocationField,
+          {
+            label: "AUTHORITY",
+            value: location.authority,
+            slug
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          StatusField,
+          {
+            value: location.status,
+            fieldClass: "location-dossier__field"
+          }
+        )
+      ] })
     ] })
   ] });
 }
@@ -221,6 +325,14 @@ var BlackDogsDossier = ({
   if (mech) {
     return renderMech(
       mech,
+      frontmatter,
+      fileData.slug
+    );
+  }
+  const location = frontmatter.location;
+  if (location) {
+    return renderLocation(
+      location,
       frontmatter,
       fileData.slug
     );

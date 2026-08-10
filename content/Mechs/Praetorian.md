@@ -11,7 +11,7 @@ cssclasses:
   - mech
 
 mech:
-  name: Praetorian
+  name: BD001-Praetorian
 
   pilot: Arcus Blackwater
   pilotCallsign: TEMPLE

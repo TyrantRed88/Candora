@@ -16,7 +16,9 @@ operator:
   class: Cleric
   species: Human
   rank: Commander
-  mech: Praetorian
+  organization: Black Dogs PMC
+  ship: Dawnchaser
+  mech: "[[Mechs/Praetorian]]"
   status: Active
   portrait: images/characters/arcus-headshot.png
   badge: images/characters/arcus-badge.png

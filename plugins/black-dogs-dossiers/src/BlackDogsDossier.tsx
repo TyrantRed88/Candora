@@ -15,7 +15,11 @@ interface OperatorData {
   class?: string
   species?: string
   rank?: string
+
+  organization?: string
+  ship?: string
   mech?: string
+
   status?: string
   portrait?: string
   badge?: string
@@ -45,6 +49,20 @@ interface MechData {
   frame?: MechFrameData
 }
 
+interface LocationData {
+  name?: string
+
+  type?: string
+  role?: string
+
+  system?: string
+  sector?: string
+
+  authority?: string
+  status?: string
+
+  image?: string
+}
 
 /* =========================================================
    SHARED HELPERS
@@ -75,22 +93,125 @@ function resolveStatic(
   return `${root}/static/${cleanPath}`
 }
 
+function resolvePage(
+  target: string,
+  slug: string | undefined,
+) {
+  const cleanTarget = target
+    .replace(/\.md$/i, "")
+    .replace(/^\/+/, "")
+
+  const currentSlug = slug ?? ""
+
+  const depth = Math.max(
+    0,
+    currentSlug.split("/").length - 1,
+  )
+
+  const root =
+    depth === 0
+      ? "."
+      : Array(depth).fill("..").join("/")
+
+  return `${root}/${cleanTarget}`
+}
+
+
+function parseDossierValue(value?: string) {
+  if (!value) {
+    return undefined
+  }
+
+  const match = value.match(
+    /^\[\[([^|\]]+)(?:\|([^\]]+))?\]\]$/,
+  )
+
+  if (!match) {
+    return {
+      label: value,
+    }
+  }
+
+  const target = match[1].trim()
+
+  const label =
+    match[2]?.trim() ??
+    target.split("/").pop() ??
+    target
+
+  return {
+    label,
+    target,
+  }
+}
+
 
 function OperatorField({
   label,
   value,
+  slug,
 }: {
   label: string
   value?: string
+  slug?: string
 }) {
+  const parsed = parseDossierValue(value)
+
+  if (!parsed) {
+    return null
+  }
+
   return (
     <div class="operator-dossier__field">
       <span>{label}</span>
-      <strong>{value ?? "—"}</strong>
+
+      <strong>
+        {parsed.target ? (
+          <a href={resolvePage(parsed.target, slug)}>
+            {parsed.label}
+          </a>
+        ) : (
+          parsed.label
+        )}
+      </strong>
     </div>
   )
 }
 
+function StatusField({
+  value,
+  fieldClass,
+}: {
+  value?: string
+  fieldClass: string
+}) {
+  const normalized =
+    value?.trim().toLowerCase() ?? "unknown"
+
+  let statusClass = "status-unknown"
+  let statusText = "UNKNOWN"
+
+  if (normalized === "active") {
+    statusClass = "status-active"
+    statusText = "ACTIVE"
+  }
+
+  if (normalized === "inactive") {
+    statusClass = "status-inactive"
+    statusText = "INACTIVE"
+  }
+
+  return (
+    <div class={`${fieldClass} dossier-field--status`}>
+      <span>STATUS</span>
+
+      <strong class={`dossier-status ${statusClass}`}>
+        <i aria-hidden="true" />
+        {statusText}
+      </strong>
+    </div>
+  )
+}
 
 function MechField({
   label,
@@ -127,6 +248,38 @@ function FrameField({
   )
 }
 
+function LocationField({
+  label,
+  value,
+  slug,
+}: {
+  label: string
+  value?: string
+  slug?: string
+}) {
+  const parsed =
+    parseDossierValue(value)
+
+  if (!parsed) {
+    return null
+  }
+
+  return (
+    <div class="location-dossier__field">
+      <span>{label}</span>
+
+      <strong>
+        {parsed.target ? (
+          <a href={resolvePage(parsed.target, slug)}>
+            {parsed.label}
+          </a>
+        ) : (
+          parsed.label
+        )}
+      </strong>
+    </div>
+  )
+}
 
 /* =========================================================
    OPERATOR VIEW
@@ -176,31 +329,48 @@ function renderOperator(
           <OperatorField
             label="CALLSIGN"
             value={operator.callsign}
+            slug={slug}
           />
 
           <OperatorField
             label="CLASS"
             value={operator.class}
+            slug={slug}
           />
 
           <OperatorField
             label="SPECIES"
             value={operator.species}
+            slug={slug}
           />
 
           <OperatorField
             label="RANK"
             value={operator.rank}
+            slug={slug}
+          />
+
+          <OperatorField
+            label="ORGANIZATION"
+            value={operator.organization}
+            slug={slug}
+          />
+
+          <OperatorField
+            label="SHIP"
+            value={operator.ship}
+            slug={slug}
           />
 
           <OperatorField
             label="MECH-ID"
             value={operator.mech}
+            slug={slug}
           />
 
-          <OperatorField
-            label="STATUS"
+          <StatusField
             value={operator.status}
+            fieldClass="operator-dossier__field"
           />
 
         </div>
@@ -245,19 +415,6 @@ function renderMech(
         BLACK DOGS PMC // MECH DOSSIER
       </div>
 
-      <div class="mech-dossier__visual">
-        {image ? (
-          <img
-            src={image}
-            alt={`${name} combat frame`}
-          />
-        ) : (
-          <span class="mech-dossier__no-visual">
-            NO VISUAL RECORD
-          </span>
-        )}
-      </div>
-
       <div class="mech-dossier__identity">
 
         <div class="mech-dossier__name">
@@ -277,60 +434,124 @@ function renderMech(
           />
 
           <MechField
-            label="ROLE"
-            value={mech.role}
-          />
-
-          <MechField
-            label="CLASS"
-            value={mech.class}
-          />
-
-          <MechField
             label="AFFILIATION"
             value={mech.affiliation}
           />
 
-          <MechField
-            label="STATUS"
+          <StatusField
             value={mech.status}
+            fieldClass="mech-dossier__field"
           />
 
         </div>
+
       </div>
 
-      <div class="mech-dossier__frame">
-
-        <div class="mech-dossier__frame-title">
-          FRAME PROFILE
-        </div>
-
-        <FrameField
-          label="POWER"
-          value={mech.frame?.power}
-        />
-
-        <FrameField
-          label="MOBILITY"
-          value={mech.frame?.mobility}
-        />
-
-        <FrameField
-          label="SYSTEMS"
-          value={mech.frame?.systems}
-        />
-
-        <FrameField
-          label="INTEGRITY"
-          value={mech.frame?.integrity}
-        />
-
+      <div class="mech-dossier__visual">
+        {image ? (
+          <img
+            src={image}
+            alt={`${name} combat frame`}
+          />
+        ) : (
+          <span class="mech-dossier__no-visual">
+            NO VISUAL RECORD
+          </span>
+        )}
       </div>
 
     </section>
   )
 }
 
+/* =========================================================
+   LOCATION VIEW
+   ========================================================= */
+
+function renderLocation(
+  location: LocationData,
+  frontmatter: Record<string, unknown>,
+  slug: string | undefined,
+) {
+  const name =
+    location.name ??
+    (typeof frontmatter.title === "string"
+      ? frontmatter.title
+      : "UNREGISTERED LOCATION")
+
+  const image =
+    resolveStatic(location.image, slug)
+
+  return (
+    <section class="black-dogs-dossier location-dossier">
+
+      <div class="location-dossier__register">
+        BLACK DOGS PMC // LOCATION DOSSIER
+      </div>
+
+      <div class="location-dossier__visual">
+        {image ? (
+          <img
+            src={image}
+            alt={`${name} survey record`}
+          />
+        ) : (
+          <span class="location-dossier__no-visual">
+            NO SURVEY IMAGE
+          </span>
+        )}
+      </div>
+
+      <div class="location-dossier__identity">
+
+        <div class="location-dossier__name">
+          {name}
+        </div>
+
+        <div class="location-dossier__grid">
+
+          <LocationField
+            label="TYPE"
+            value={location.type}
+            slug={slug}
+          />
+
+          <LocationField
+            label="ROLE"
+            value={location.role}
+            slug={slug}
+          />
+
+          <LocationField
+            label="SYSTEM"
+            value={location.system}
+            slug={slug}
+          />
+
+          <LocationField
+            label="SECTOR"
+            value={location.sector}
+            slug={slug}
+          />
+
+          <LocationField
+            label="AUTHORITY"
+            value={location.authority}
+            slug={slug}
+          />
+
+          <StatusField
+            value={location.status}
+            fieldClass="location-dossier__field"
+          />
+
+        </div>
+
+      </div>
+
+    </section>
+  )
+}
 
 /* =========================================================
    DOSSIER DISPATCHER
@@ -375,6 +596,18 @@ const BlackDogsDossier: QuartzComponent = ({
     )
   }
 
+  const location =
+  frontmatter.location as
+    | LocationData
+    | undefined
+
+if (location) {
+  return renderLocation(
+    location,
+    frontmatter,
+    fileData.slug,
+  )
+}
   return null
 }
 
