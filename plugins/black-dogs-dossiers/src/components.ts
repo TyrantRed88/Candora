@@ -1,1 +1,3 @@
-export { default as OperatorDossier } from "./OperatorDossier"
+export {
+  default as BlackDogsDossier
+} from "./BlackDogsDossier"

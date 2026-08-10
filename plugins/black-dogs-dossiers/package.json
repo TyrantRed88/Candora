@@ -1,6 +1,6 @@
 {
   "name": "black-dogs-dossiers",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "private": true,
 
@@ -14,13 +14,15 @@
 
   "quartz": {
     "name": "black-dogs-dossiers",
-    "version": "0.1.0",
+    "version": "0.2.0",
+    "category": "component",
+
     "components": {
-      "OperatorDossier": {
-        "name": "OperatorDossier",
-        "displayName": "Operator Dossier",
-        "description": "Renders Black Dogs operator metadata from frontmatter.",
-        "version": "0.1.0",
+      "BlackDogsDossier": {
+        "name": "BlackDogsDossier",
+        "displayName": "Black Dogs Dossier",
+        "description": "Renders Black Dogs dossier headers from structured frontmatter.",
+        "version": "0.2.0",
         "defaultPosition": "beforeBody",
         "defaultPriority": 25
       }
