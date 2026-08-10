@@ -7,7 +7,7 @@ configuration:
   analytics:
     provider: plausible
   locale: en-US
-  baseUrl: candora.github.io
+  baseUrl: tyrantred88.github.io/Candora/
   ignorePatterns:
     - private
     - templates
