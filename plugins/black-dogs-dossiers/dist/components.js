@@ -1,5 +1,5 @@
 // src/BlackDogsDossier.tsx
-import { jsx, jsxs } from "preact/jsx-runtime";
+import { Fragment, jsx, jsxs } from "preact/jsx-runtime";
 function resolveStatic(path, slug) {
   if (!path) return void 0;
   const cleanPath = path.replace(/^\/+/, "").replace(/^static\//, "");
@@ -306,6 +306,100 @@ function renderLocation(location, frontmatter, slug) {
     ] })
   ] });
 }
+function renderHome(home, frontmatter, slug) {
+  const title = home.title ?? (typeof frontmatter.title === "string" ? frontmatter.title : "BLACK DOGS ARCHIVE");
+  const logo = resolveStatic(home.logo, slug);
+  const categories = [
+    {
+      code: "01",
+      title: "Operators",
+      detail: "Personnel records, assignments, and field identities.",
+      target: "Characters"
+    },
+    {
+      code: "02",
+      title: "Mechs",
+      detail: "Combat frames, systems, deployments, and technical records.",
+      target: "Mechs"
+    },
+    {
+      code: "03",
+      title: "Ships",
+      detail: "Naval assets, support craft, and fleet intelligence.",
+      target: "Ships"
+    },
+    {
+      code: "04",
+      title: "Factions",
+      detail: "Governments, corporations, militaries, faiths, and organizations.",
+      target: "Factions"
+    },
+    {
+      code: "05",
+      title: "Locations",
+      detail: "Planets, stations, systems, sectors, and strategic sites.",
+      target: "Locations"
+    }
+  ];
+  return /* @__PURE__ */ jsxs("section", { class: "black-dogs-dossier archive-home", children: [
+    /* @__PURE__ */ jsxs("header", { class: "archive-home__hero", children: [
+      /* @__PURE__ */ jsx("div", { class: "archive-home__logo", children: logo && /* @__PURE__ */ jsx(
+        "img",
+        {
+          src: logo,
+          alt: "Black Dogs PMC"
+        }
+      ) }),
+      /* @__PURE__ */ jsxs("div", { class: "archive-home__identity", children: [
+        /* @__PURE__ */ jsx("div", { class: "archive-home__register", children: "BLACK DOGS PMC // ARCHIVAL ACCESS NODE" }),
+        /* @__PURE__ */ jsx("h1", { class: "archive-home__title", children: title }),
+        /* @__PURE__ */ jsx("div", { class: "archive-home__subtitle", children: home.subtitle })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { class: "archive-home__telemetry", children: [
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("span", { children: "NETWORK" }),
+          /* @__PURE__ */ jsxs("strong", { class: "dossier-status status-active", children: [
+            /* @__PURE__ */ jsx("i", { "aria-hidden": "true" }),
+            home.status ?? "ACTIVE"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("span", { children: "ACCESS" }),
+          /* @__PURE__ */ jsx("strong", { children: home.classification ?? "INTERNAL" })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx("div", { class: "archive-home__section-label", children: "ARCHIVE DIRECTORY" }),
+    /* @__PURE__ */ jsx("nav", { class: "archive-home__directory", children: categories.map((category) => /* @__PURE__ */ jsxs(
+      "a",
+      {
+        class: "archive-home__category",
+        href: resolvePage(category.target, slug),
+        children: [
+          /* @__PURE__ */ jsx("span", { class: "archive-home__category-code", children: category.code }),
+          /* @__PURE__ */ jsx("strong", { children: category.title }),
+          /* @__PURE__ */ jsx("p", { children: category.detail }),
+          /* @__PURE__ */ jsx("span", { class: "archive-home__category-access", children: "OPEN RECORDS \u2192" })
+        ]
+      }
+    )) }),
+    home.featured && home.featured.length > 0 && /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx("div", { class: "archive-home__section-label", children: "PRIORITY RECORDS" }),
+      /* @__PURE__ */ jsx("div", { class: "archive-home__featured", children: home.featured.map((record) => /* @__PURE__ */ jsxs(
+        "a",
+        {
+          class: "archive-home__featured-record",
+          href: record.target ? resolvePage(record.target, slug) : "#",
+          children: [
+            /* @__PURE__ */ jsx("span", { children: record.label }),
+            /* @__PURE__ */ jsx("strong", { children: record.title }),
+            /* @__PURE__ */ jsx("small", { children: record.detail })
+          ]
+        }
+      )) })
+    ] })
+  ] });
+}
 var BlackDogsDossier = ({
   fileData
 }) => {
@@ -333,6 +427,14 @@ var BlackDogsDossier = ({
   if (location) {
     return renderLocation(
       location,
+      frontmatter,
+      fileData.slug
+    );
+  }
+  const home = frontmatter.home;
+  if (home) {
+    return renderHome(
+      home,
       frontmatter,
       fileData.slug
     );

@@ -6,7 +6,7 @@ tags:
   - stations
 
 location:
-  name: Port Meridian
+  name: Meridian Station
   type: Orbital Station
   role: Trade Hub
   system: "[[Locations/Systems/Meridian|Meridian System]]"

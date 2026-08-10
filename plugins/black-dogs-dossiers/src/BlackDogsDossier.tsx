@@ -64,6 +64,21 @@ interface LocationData {
   image?: string
 }
 
+interface HomeFeaturedData {
+  label?: string
+  title?: string
+  detail?: string
+  target?: string
+}
+
+interface HomeData {
+  title?: string
+  subtitle?: string
+  status?: string
+  classification?: string
+  logo?: string
+  featured?: HomeFeaturedData[]
+}
 /* =========================================================
    SHARED HELPERS
    ========================================================= */
@@ -554,6 +569,177 @@ function renderLocation(
 }
 
 /* =========================================================
+   HOME
+   ========================================================= */
+
+   function renderHome(
+  home: HomeData,
+  frontmatter: Record<string, unknown>,
+  slug: string | undefined,
+) {
+  const title =
+    home.title ??
+    (typeof frontmatter.title === "string"
+      ? frontmatter.title
+      : "BLACK DOGS ARCHIVE")
+
+  const logo =
+    resolveStatic(home.logo, slug)
+
+  const categories = [
+    {
+      code: "01",
+      title: "Operators",
+      detail: "Personnel records, assignments, and field identities.",
+      target: "Characters",
+    },
+    {
+      code: "02",
+      title: "Mechs",
+      detail: "Combat frames, systems, deployments, and technical records.",
+      target: "Mechs",
+    },
+    {
+      code: "03",
+      title: "Ships",
+      detail: "Naval assets, support craft, and fleet intelligence.",
+      target: "Ships",
+    },
+    {
+      code: "04",
+      title: "Factions",
+      detail: "Governments, corporations, militaries, faiths, and organizations.",
+      target: "Factions",
+    },
+    {
+      code: "05",
+      title: "Locations",
+      detail: "Planets, stations, systems, sectors, and strategic sites.",
+      target: "Locations",
+    },
+  ]
+
+  return (
+    <section class="black-dogs-dossier archive-home">
+
+      <header class="archive-home__hero">
+
+        <div class="archive-home__logo">
+          {logo && (
+            <img
+              src={logo}
+              alt="Black Dogs PMC"
+            />
+          )}
+        </div>
+
+        <div class="archive-home__identity">
+
+          <div class="archive-home__register">
+            BLACK DOGS PMC // ARCHIVAL ACCESS NODE
+          </div>
+
+          <h1 class="archive-home__title">
+            {title}
+          </h1>
+
+          <div class="archive-home__subtitle">
+            {home.subtitle}
+          </div>
+
+        </div>
+
+        <div class="archive-home__telemetry">
+
+          <div>
+            <span>NETWORK</span>
+
+            <strong class="dossier-status status-active">
+              <i aria-hidden="true" />
+              {home.status ?? "ACTIVE"}
+            </strong>
+          </div>
+
+          <div>
+            <span>ACCESS</span>
+            <strong>{home.classification ?? "INTERNAL"}</strong>
+          </div>
+
+        </div>
+
+      </header>
+
+
+      <div class="archive-home__section-label">
+        ARCHIVE DIRECTORY
+      </div>
+
+      <nav class="archive-home__directory">
+
+        {categories.map((category) => (
+          <a
+            class="archive-home__category"
+            href={resolvePage(category.target, slug)}
+          >
+            <span class="archive-home__category-code">
+              {category.code}
+            </span>
+
+            <strong>
+              {category.title}
+            </strong>
+
+            <p>
+              {category.detail}
+            </p>
+
+            <span class="archive-home__category-access">
+              OPEN RECORDS →
+            </span>
+          </a>
+        ))}
+
+      </nav>
+
+
+      {home.featured && home.featured.length > 0 && (
+        <>
+          <div class="archive-home__section-label">
+            PRIORITY RECORDS
+          </div>
+
+          <div class="archive-home__featured">
+
+            {home.featured.map((record) => (
+              <a
+                class="archive-home__featured-record"
+                href={
+                  record.target
+                    ? resolvePage(record.target, slug)
+                    : "#"
+                }
+              >
+                <span>{record.label}</span>
+
+                <strong>
+                  {record.title}
+                </strong>
+
+                <small>
+                  {record.detail}
+                </small>
+              </a>
+            ))}
+
+          </div>
+        </>
+      )}
+
+    </section>
+  )
+}
+
+/* =========================================================
    DOSSIER DISPATCHER
    ========================================================= */
 
@@ -604,6 +790,19 @@ const BlackDogsDossier: QuartzComponent = ({
 if (location) {
   return renderLocation(
     location,
+    frontmatter,
+    fileData.slug,
+  )
+}
+
+const home =
+  frontmatter.home as
+    | HomeData
+    | undefined
+
+if (home) {
+  return renderHome(
+    home,
     frontmatter,
     fileData.slug,
   )
