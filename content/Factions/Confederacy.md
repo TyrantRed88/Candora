@@ -1,4 +1,6 @@
 ---
+title: Stellar Confederacy
+
 faction:
   name: The Stellar Confederacy
   type: Federal Governing Body
