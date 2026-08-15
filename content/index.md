@@ -23,5 +23,5 @@ home:
     - label: Flagship
       title: Dawnchaser
       detail: Expeditionary Cruiser
-      target: Ships/Dawnchaser
+      target: Ships/Black-Dogs/Dawnchaser
 ---
