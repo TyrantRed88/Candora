@@ -40,16 +40,17 @@ function parseDossierValue(value) {
     target
   };
 }
-function OperatorField({
+function DossierField({
   label,
   value,
-  slug
+  slug,
+  fieldClass
 }) {
   const parsed = parseDossierValue(value);
   if (!parsed) {
     return null;
   }
-  return /* @__PURE__ */ jsxs("div", { class: "operator-dossier__field", children: [
+  return /* @__PURE__ */ jsxs("div", { class: fieldClass, children: [
     /* @__PURE__ */ jsx("span", { children: label }),
     /* @__PURE__ */ jsx("strong", { children: parsed.target ? /* @__PURE__ */ jsx("a", { href: resolvePage(parsed.target, slug), children: parsed.label }) : parsed.label })
   ] });
@@ -77,32 +78,6 @@ function StatusField({
     ] })
   ] });
 }
-function MechField({
-  label,
-  value
-}) {
-  if (!value) {
-    return null;
-  }
-  return /* @__PURE__ */ jsxs("div", { class: "mech-dossier__field", children: [
-    /* @__PURE__ */ jsx("span", { children: label }),
-    /* @__PURE__ */ jsx("strong", { children: value })
-  ] });
-}
-function LocationField({
-  label,
-  value,
-  slug
-}) {
-  const parsed = parseDossierValue(value);
-  if (!parsed) {
-    return null;
-  }
-  return /* @__PURE__ */ jsxs("div", { class: "location-dossier__field", children: [
-    /* @__PURE__ */ jsx("span", { children: label }),
-    /* @__PURE__ */ jsx("strong", { children: parsed.target ? /* @__PURE__ */ jsx("a", { href: resolvePage(parsed.target, slug), children: parsed.label }) : parsed.label })
-  ] });
-}
 function renderOperator(operator, frontmatter, slug) {
   const name = operator.name ?? (typeof frontmatter.title === "string" ? frontmatter.title : "UNREGISTERED OPERATOR");
   const portrait = resolveStatic(operator.portrait, slug);
@@ -120,59 +95,66 @@ function renderOperator(operator, frontmatter, slug) {
       /* @__PURE__ */ jsx("div", { class: "operator-dossier__name", children: name }),
       /* @__PURE__ */ jsxs("div", { class: "operator-dossier__grid", children: [
         /* @__PURE__ */ jsx(
-          OperatorField,
+          DossierField,
           {
             label: "CALLSIGN",
             value: operator.callsign,
-            slug
+            slug,
+            fieldClass: "operator-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          OperatorField,
+          DossierField,
           {
             label: "CLASS",
             value: operator.class,
-            slug
+            slug,
+            fieldClass: "operator-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          OperatorField,
+          DossierField,
           {
             label: "SPECIES",
             value: operator.species,
-            slug
+            slug,
+            fieldClass: "operator-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          OperatorField,
+          DossierField,
           {
             label: "RANK",
             value: operator.rank,
-            slug
+            slug,
+            fieldClass: "operator-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          OperatorField,
+          DossierField,
           {
             label: "ORGANIZATION",
             value: operator.organization,
-            slug
+            slug,
+            fieldClass: "operator-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          OperatorField,
+          DossierField,
           {
             label: "SHIP",
             value: operator.ship,
-            slug
+            slug,
+            fieldClass: "operator-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          OperatorField,
+          DossierField,
           {
             label: "MECH-ID",
             value: operator.mech,
-            slug
+            slug,
+            fieldClass: "operator-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
@@ -202,24 +184,30 @@ function renderMech(mech, frontmatter, slug) {
       /* @__PURE__ */ jsx("div", { class: "mech-dossier__name", children: name }),
       /* @__PURE__ */ jsxs("div", { class: "mech-dossier__grid", children: [
         /* @__PURE__ */ jsx(
-          MechField,
+          DossierField,
           {
             label: "PILOT",
-            value: mech.pilot
+            value: mech.pilot,
+            slug,
+            fieldClass: "mech-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          MechField,
+          DossierField,
           {
             label: "CALLSIGN",
-            value: mech.pilotCallsign
+            value: mech.pilotCallsign,
+            slug,
+            fieldClass: "mech-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          MechField,
+          DossierField,
           {
             label: "AFFILIATION",
-            value: mech.affiliation
+            value: mech.affiliation,
+            slug,
+            fieldClass: "mech-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
@@ -240,6 +228,225 @@ function renderMech(mech, frontmatter, slug) {
     ) : /* @__PURE__ */ jsx("span", { class: "mech-dossier__no-visual", children: "NO VISUAL RECORD" }) })
   ] });
 }
+function renderShip(ship, frontmatter, slug) {
+  const name = ship.name ?? (typeof frontmatter.title === "string" ? frontmatter.title : "UNREGISTERED VESSEL");
+  const image = resolveStatic(ship.image, slug);
+  const hasSpecs = Boolean(
+    ship.specs?.length || ship.specs?.crew || ship.specs?.complement || ship.specs?.armament
+  );
+  return /* @__PURE__ */ jsxs("section", { class: "black-dogs-dossier ship-dossier", children: [
+    /* @__PURE__ */ jsx("div", { class: "ship-dossier__register", children: "BLACK DOGS PMC // NAVAL ASSET DOSSIER" }),
+    /* @__PURE__ */ jsx("div", { class: "ship-dossier__visual", children: image ? /* @__PURE__ */ jsx(
+      "img",
+      {
+        src: image,
+        alt: `${name} vessel record`
+      }
+    ) : /* @__PURE__ */ jsx("span", { class: "ship-dossier__no-visual", children: "NO VESSEL IMAGE" }) }),
+    /* @__PURE__ */ jsxs("div", { class: "ship-dossier__identity", children: [
+      /* @__PURE__ */ jsx("div", { class: "ship-dossier__name", children: name }),
+      /* @__PURE__ */ jsxs("div", { class: "ship-dossier__grid", children: [
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "CLASS",
+            value: ship.class,
+            slug,
+            fieldClass: "ship-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "TYPE",
+            value: ship.type,
+            slug,
+            fieldClass: "ship-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "ROLE",
+            value: ship.role,
+            slug,
+            fieldClass: "ship-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "REGISTRY",
+            value: ship.registry,
+            slug,
+            fieldClass: "ship-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "MANUFACTURER",
+            value: ship.manufacturer,
+            slug,
+            fieldClass: "ship-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "AFFILIATION",
+            value: ship.affiliation,
+            slug,
+            fieldClass: "ship-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "COMMANDER",
+            value: ship.commander,
+            slug,
+            fieldClass: "ship-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          StatusField,
+          {
+            value: ship.status,
+            fieldClass: "ship-dossier__field"
+          }
+        )
+      ] }),
+      hasSpecs && /* @__PURE__ */ jsxs("div", { class: "ship-dossier__specs", children: [
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "LENGTH",
+            value: ship.specs?.length,
+            slug,
+            fieldClass: "ship-dossier__spec-field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "CREW",
+            value: ship.specs?.crew,
+            slug,
+            fieldClass: "ship-dossier__spec-field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "COMPLEMENT",
+            value: ship.specs?.complement,
+            slug,
+            fieldClass: "ship-dossier__spec-field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "ARMAMENT",
+            value: ship.specs?.armament,
+            slug,
+            fieldClass: "ship-dossier__spec-field"
+          }
+        )
+      ] })
+    ] })
+  ] });
+}
+function renderFaction(faction, frontmatter, slug) {
+  const name = faction.name ?? (typeof frontmatter.title === "string" ? frontmatter.title : "UNREGISTERED FACTION");
+  const emblem = resolveStatic(faction.emblem, slug);
+  return /* @__PURE__ */ jsxs("section", { class: "black-dogs-dossier faction-dossier", children: [
+    /* @__PURE__ */ jsx("div", { class: "faction-dossier__register", children: "BLACK DOGS PMC // FACTION INTELLIGENCE DOSSIER" }),
+    /* @__PURE__ */ jsx("div", { class: "faction-dossier__emblem", children: emblem ? /* @__PURE__ */ jsx(
+      "img",
+      {
+        src: emblem,
+        alt: `${name} emblem`
+      }
+    ) : /* @__PURE__ */ jsx("span", { class: "faction-dossier__no-emblem", children: "NO HERALDIC RECORD" }) }),
+    /* @__PURE__ */ jsxs("div", { class: "faction-dossier__identity", children: [
+      /* @__PURE__ */ jsx("div", { class: "faction-dossier__name", children: name }),
+      /* @__PURE__ */ jsxs("div", { class: "faction-dossier__grid", children: [
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "TYPE",
+            value: faction.type,
+            slug,
+            fieldClass: "faction-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "ROLE",
+            value: faction.role,
+            slug,
+            fieldClass: "faction-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "LEADER",
+            value: faction.leader,
+            slug,
+            fieldClass: "faction-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "HEADQUARTERS",
+            value: faction.headquarters,
+            slug,
+            fieldClass: "faction-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "TERRITORY",
+            value: faction.territory,
+            slug,
+            fieldClass: "faction-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "PARENT",
+            value: faction.parent,
+            slug,
+            fieldClass: "faction-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          DossierField,
+          {
+            label: "ALLEGIANCE",
+            value: faction.allegiance,
+            slug,
+            fieldClass: "faction-dossier__field"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          StatusField,
+          {
+            value: faction.status,
+            fieldClass: "faction-dossier__field"
+          }
+        )
+      ] })
+    ] })
+  ] });
+}
 function renderLocation(location, frontmatter, slug) {
   const name = location.name ?? (typeof frontmatter.title === "string" ? frontmatter.title : "UNREGISTERED LOCATION");
   const image = resolveStatic(location.image, slug);
@@ -256,43 +463,48 @@ function renderLocation(location, frontmatter, slug) {
       /* @__PURE__ */ jsx("div", { class: "location-dossier__name", children: name }),
       /* @__PURE__ */ jsxs("div", { class: "location-dossier__grid", children: [
         /* @__PURE__ */ jsx(
-          LocationField,
+          DossierField,
           {
             label: "TYPE",
             value: location.type,
-            slug
+            slug,
+            fieldClass: "location-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          LocationField,
+          DossierField,
           {
             label: "ROLE",
             value: location.role,
-            slug
+            slug,
+            fieldClass: "location-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          LocationField,
+          DossierField,
           {
             label: "SYSTEM",
             value: location.system,
-            slug
+            slug,
+            fieldClass: "location-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          LocationField,
+          DossierField,
           {
             label: "SECTOR",
             value: location.sector,
-            slug
+            slug,
+            fieldClass: "location-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
-          LocationField,
+          DossierField,
           {
             label: "AUTHORITY",
             value: location.authority,
-            slug
+            slug,
+            fieldClass: "location-dossier__field"
           }
         ),
         /* @__PURE__ */ jsx(
@@ -419,6 +631,22 @@ var BlackDogsDossier = ({
   if (mech) {
     return renderMech(
       mech,
+      frontmatter,
+      fileData.slug
+    );
+  }
+  const ship = frontmatter.ship;
+  if (ship) {
+    return renderShip(
+      ship,
+      frontmatter,
+      fileData.slug
+    );
+  }
+  const faction = frontmatter.faction;
+  if (faction) {
+    return renderFaction(
+      faction,
       frontmatter,
       fileData.slug
     );

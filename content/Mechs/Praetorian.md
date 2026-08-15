@@ -13,7 +13,7 @@ cssclasses:
 mech:
   name: BD001-Praetorian
 
-  pilot: Arcus Blackwater
+  pilot: "[[Characters/Black-Dogs/Arcus|Arcus Blackwater]]"
   pilotCallsign: TEMPLE
 
   affiliation: Black Dogs PMC

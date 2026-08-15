@@ -24,7 +24,6 @@ interface OperatorData {
   portrait?: string
   badge?: string
 }
-
 interface MechFrameData {
   power?: string
   mobility?: string
@@ -49,6 +48,49 @@ interface MechData {
   frame?: MechFrameData
 }
 
+interface ShipSpecsData {
+  length?: string
+  crew?: string
+  complement?: string
+  armament?: string
+}
+
+interface ShipData {
+  name?: string
+
+  class?: string
+  type?: string
+  role?: string
+
+  registry?: string
+  manufacturer?: string
+
+  affiliation?: string
+  commander?: string
+
+  status?: string
+  image?: string
+
+  specs?: ShipSpecsData
+}
+
+interface FactionData {
+  name?: string
+
+  type?: string
+  role?: string
+
+  leader?: string
+  headquarters?: string
+  territory?: string
+
+  parent?: string
+  allegiance?: string
+
+  status?: string
+  emblem?: string
+}
+
 interface LocationData {
   name?: string
 
@@ -63,7 +105,6 @@ interface LocationData {
 
   image?: string
 }
-
 interface HomeFeaturedData {
   label?: string
   title?: string
@@ -82,7 +123,6 @@ interface HomeData {
 /* =========================================================
    SHARED HELPERS
    ========================================================= */
-
 function resolveStatic(
   path: string | undefined,
   slug: string | undefined,
@@ -107,7 +147,6 @@ function resolveStatic(
 
   return `${root}/static/${cleanPath}`
 }
-
 function resolvePage(
   target: string,
   slug: string | undefined,
@@ -136,7 +175,6 @@ function parseDossierValue(value?: string) {
   if (!value) {
     return undefined
   }
-
   const match = value.match(
     /^\[\[([^|\]]+)(?:\|([^\]]+))?\]\]$/,
   )
@@ -161,14 +199,16 @@ function parseDossierValue(value?: string) {
 }
 
 
-function OperatorField({
+function DossierField({
   label,
   value,
   slug,
+  fieldClass,
 }: {
   label: string
   value?: string
   slug?: string
+  fieldClass: string
 }) {
   const parsed = parseDossierValue(value)
 
@@ -177,7 +217,7 @@ function OperatorField({
   }
 
   return (
-    <div class="operator-dossier__field">
+    <div class={fieldClass}>
       <span>{label}</span>
 
       <strong>
@@ -202,7 +242,6 @@ function StatusField({
 }) {
   const normalized =
     value?.trim().toLowerCase() ?? "unknown"
-
   let statusClass = "status-unknown"
   let statusText = "UNKNOWN"
 
@@ -228,25 +267,6 @@ function StatusField({
   )
 }
 
-function MechField({
-  label,
-  value,
-}: {
-  label: string
-  value?: string
-}) {
-  if (!value) {
-    return null
-  }
-
-  return (
-    <div class="mech-dossier__field">
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
-  )
-}
-
 
 function FrameField({
   label,
@@ -262,40 +282,6 @@ function FrameField({
     </div>
   )
 }
-
-function LocationField({
-  label,
-  value,
-  slug,
-}: {
-  label: string
-  value?: string
-  slug?: string
-}) {
-  const parsed =
-    parseDossierValue(value)
-
-  if (!parsed) {
-    return null
-  }
-
-  return (
-    <div class="location-dossier__field">
-      <span>{label}</span>
-
-      <strong>
-        {parsed.target ? (
-          <a href={resolvePage(parsed.target, slug)}>
-            {parsed.label}
-          </a>
-        ) : (
-          parsed.label
-        )}
-      </strong>
-    </div>
-  )
-}
-
 /* =========================================================
    OPERATOR VIEW
    ========================================================= */
@@ -313,7 +299,6 @@ function renderOperator(
 
   const portrait =
     resolveStatic(operator.portrait, slug)
-
   const badge =
     resolveStatic(operator.badge, slug)
 
@@ -334,55 +319,59 @@ function renderOperator(
       </div>
 
       <div class="operator-dossier__identity">
-
         <div class="operator-dossier__name">
           {name}
         </div>
 
         <div class="operator-dossier__grid">
 
-          <OperatorField
+          <DossierField
             label="CALLSIGN"
             value={operator.callsign}
             slug={slug}
+            fieldClass="operator-dossier__field"
           />
 
-          <OperatorField
+          <DossierField
             label="CLASS"
             value={operator.class}
             slug={slug}
+            fieldClass="operator-dossier__field"
           />
 
-          <OperatorField
+          <DossierField
             label="SPECIES"
             value={operator.species}
             slug={slug}
+            fieldClass="operator-dossier__field"
           />
-
-          <OperatorField
+          <DossierField
             label="RANK"
             value={operator.rank}
             slug={slug}
+            fieldClass="operator-dossier__field"
           />
 
-          <OperatorField
+          <DossierField
             label="ORGANIZATION"
             value={operator.organization}
             slug={slug}
+            fieldClass="operator-dossier__field"
           />
 
-          <OperatorField
+          <DossierField
             label="SHIP"
             value={operator.ship}
             slug={slug}
+            fieldClass="operator-dossier__field"
           />
 
-          <OperatorField
+          <DossierField
             label="MECH-ID"
             value={operator.mech}
             slug={slug}
+            fieldClass="operator-dossier__field"
           />
-
           <StatusField
             value={operator.status}
             fieldClass="operator-dossier__field"
@@ -408,7 +397,6 @@ function renderOperator(
 /* =========================================================
    MECH VIEW
    ========================================================= */
-
 function renderMech(
   mech: MechData,
   frontmatter: Record<string, unknown>,
@@ -431,28 +419,32 @@ function renderMech(
       </div>
 
       <div class="mech-dossier__identity">
-
         <div class="mech-dossier__name">
           {name}
         </div>
 
         <div class="mech-dossier__grid">
 
-          <MechField
+          <DossierField
             label="PILOT"
             value={mech.pilot}
+            slug={slug}
+            fieldClass="mech-dossier__field"
           />
 
-          <MechField
+          <DossierField
             label="CALLSIGN"
             value={mech.pilotCallsign}
+            slug={slug}
+            fieldClass="mech-dossier__field"
           />
 
-          <MechField
+          <DossierField
             label="AFFILIATION"
             value={mech.affiliation}
+            slug={slug}
+            fieldClass="mech-dossier__field"
           />
-
           <StatusField
             value={mech.status}
             fieldClass="mech-dossier__field"
@@ -478,6 +470,262 @@ function renderMech(
     </section>
   )
 }
+/* =========================================================
+   SHIP VIEW
+   ========================================================= */
+
+function renderShip(
+  ship: ShipData,
+  frontmatter: Record<string, unknown>,
+  slug: string | undefined,
+) {
+  const name =
+    ship.name ??
+    (typeof frontmatter.title === "string"
+      ? frontmatter.title
+      : "UNREGISTERED VESSEL")
+
+  const image =
+    resolveStatic(ship.image, slug)
+
+  const hasSpecs = Boolean(
+    ship.specs?.length ||
+    ship.specs?.crew ||
+    ship.specs?.complement ||
+    ship.specs?.armament,
+  )
+
+  return (
+    <section class="black-dogs-dossier ship-dossier">
+
+      <div class="ship-dossier__register">
+        BLACK DOGS PMC // NAVAL ASSET DOSSIER
+      </div>
+
+      <div class="ship-dossier__visual">
+        {image ? (
+          <img
+            src={image}
+            alt={`${name} vessel record`}
+          />
+        ) : (
+          <span class="ship-dossier__no-visual">
+            NO VESSEL IMAGE
+          </span>
+        )}
+      </div>
+
+      <div class="ship-dossier__identity">
+
+        <div class="ship-dossier__name">
+          {name}
+        </div>
+
+        <div class="ship-dossier__grid">
+
+          <DossierField
+            label="CLASS"
+            value={ship.class}
+            slug={slug}
+            fieldClass="ship-dossier__field"
+          />
+
+          <DossierField
+            label="TYPE"
+            value={ship.type}
+            slug={slug}
+            fieldClass="ship-dossier__field"
+          />
+
+          <DossierField
+            label="ROLE"
+            value={ship.role}
+            slug={slug}
+            fieldClass="ship-dossier__field"
+          />
+
+          <DossierField
+            label="REGISTRY"
+            value={ship.registry}
+            slug={slug}
+            fieldClass="ship-dossier__field"
+          />
+
+          <DossierField
+            label="MANUFACTURER"
+            value={ship.manufacturer}
+            slug={slug}
+            fieldClass="ship-dossier__field"
+          />
+
+          <DossierField
+            label="AFFILIATION"
+            value={ship.affiliation}
+            slug={slug}
+            fieldClass="ship-dossier__field"
+          />
+
+          <DossierField
+            label="COMMANDER"
+            value={ship.commander}
+            slug={slug}
+            fieldClass="ship-dossier__field"
+          />
+
+          <StatusField
+            value={ship.status}
+            fieldClass="ship-dossier__field"
+          />
+
+        </div>
+
+        {hasSpecs && (
+          <div class="ship-dossier__specs">
+
+            <DossierField
+              label="LENGTH"
+              value={ship.specs?.length}
+              slug={slug}
+              fieldClass="ship-dossier__spec-field"
+            />
+
+            <DossierField
+              label="CREW"
+              value={ship.specs?.crew}
+              slug={slug}
+              fieldClass="ship-dossier__spec-field"
+            />
+
+            <DossierField
+              label="COMPLEMENT"
+              value={ship.specs?.complement}
+              slug={slug}
+              fieldClass="ship-dossier__spec-field"
+            />
+
+            <DossierField
+              label="ARMAMENT"
+              value={ship.specs?.armament}
+              slug={slug}
+              fieldClass="ship-dossier__spec-field"
+            />
+
+          </div>
+        )}
+
+      </div>
+
+    </section>
+  )
+}
+
+/* =========================================================
+   FACTION VIEW
+   ========================================================= */
+
+function renderFaction(
+  faction: FactionData,
+  frontmatter: Record<string, unknown>,
+  slug: string | undefined,
+) {
+  const name =
+    faction.name ??
+    (typeof frontmatter.title === "string"
+      ? frontmatter.title
+      : "UNREGISTERED FACTION")
+
+  const emblem =
+    resolveStatic(faction.emblem, slug)
+
+  return (
+    <section class="black-dogs-dossier faction-dossier">
+
+      <div class="faction-dossier__register">
+        BLACK DOGS PMC // FACTION INTELLIGENCE DOSSIER
+      </div>
+
+      <div class="faction-dossier__emblem">
+        {emblem ? (
+          <img
+            src={emblem}
+            alt={`${name} emblem`}
+          />
+        ) : (
+          <span class="faction-dossier__no-emblem">
+            NO HERALDIC RECORD
+          </span>
+        )}
+      </div>
+
+      <div class="faction-dossier__identity">
+
+        <div class="faction-dossier__name">
+          {name}
+        </div>
+
+        <div class="faction-dossier__grid">
+
+          <DossierField
+            label="TYPE"
+            value={faction.type}
+            slug={slug}
+            fieldClass="faction-dossier__field"
+          />
+
+          <DossierField
+            label="ROLE"
+            value={faction.role}
+            slug={slug}
+            fieldClass="faction-dossier__field"
+          />
+
+          <DossierField
+            label="LEADER"
+            value={faction.leader}
+            slug={slug}
+            fieldClass="faction-dossier__field"
+          />
+
+          <DossierField
+            label="HEADQUARTERS"
+            value={faction.headquarters}
+            slug={slug}
+            fieldClass="faction-dossier__field"
+          />
+
+          <DossierField
+            label="TERRITORY"
+            value={faction.territory}
+            slug={slug}
+            fieldClass="faction-dossier__field"
+          />
+
+          <DossierField
+            label="PARENT"
+            value={faction.parent}
+            slug={slug}
+            fieldClass="faction-dossier__field"
+          />
+
+          <DossierField
+            label="ALLEGIANCE"
+            value={faction.allegiance}
+            slug={slug}
+            fieldClass="faction-dossier__field"
+          />
+
+          <StatusField
+            value={faction.status}
+            fieldClass="faction-dossier__field"
+          />
+
+        </div>
+
+      </div>
+
+    </section>
+  )
+}
 
 /* =========================================================
    LOCATION VIEW
@@ -496,7 +744,6 @@ function renderLocation(
 
   const image =
     resolveStatic(location.image, slug)
-
   return (
     <section class="black-dogs-dossier location-dossier">
 
@@ -516,7 +763,6 @@ function renderLocation(
           </span>
         )}
       </div>
-
       <div class="location-dossier__identity">
 
         <div class="location-dossier__name">
@@ -525,41 +771,44 @@ function renderLocation(
 
         <div class="location-dossier__grid">
 
-          <LocationField
+          <DossierField
             label="TYPE"
             value={location.type}
             slug={slug}
+            fieldClass="location-dossier__field"
           />
 
-          <LocationField
+          <DossierField
             label="ROLE"
             value={location.role}
             slug={slug}
+            fieldClass="location-dossier__field"
           />
-
-          <LocationField
+          <DossierField
             label="SYSTEM"
             value={location.system}
             slug={slug}
+            fieldClass="location-dossier__field"
           />
 
-          <LocationField
+          <DossierField
             label="SECTOR"
             value={location.sector}
             slug={slug}
+            fieldClass="location-dossier__field"
           />
 
-          <LocationField
+          <DossierField
             label="AUTHORITY"
             value={location.authority}
             slug={slug}
+            fieldClass="location-dossier__field"
           />
 
           <StatusField
             value={location.status}
             fieldClass="location-dossier__field"
           />
-
         </div>
 
       </div>
@@ -585,7 +834,6 @@ function renderLocation(
 
   const logo =
     resolveStatic(home.logo, slug)
-
   const categories = [
     {
       code: "01",
@@ -618,7 +866,6 @@ function renderLocation(
       target: "Locations",
     },
   ]
-
   return (
     <section class="black-dogs-dossier archive-home">
 
@@ -638,7 +885,6 @@ function renderLocation(
           <div class="archive-home__register">
             BLACK DOGS PMC // ARCHIVAL ACCESS NODE
           </div>
-
           <h1 class="archive-home__title">
             {title}
           </h1>
@@ -659,7 +905,6 @@ function renderLocation(
               {home.status ?? "ACTIVE"}
             </strong>
           </div>
-
           <div>
             <span>ACCESS</span>
             <strong>{home.classification ?? "INTERNAL"}</strong>
@@ -675,7 +920,6 @@ function renderLocation(
       </div>
 
       <nav class="archive-home__directory">
-
         {categories.map((category) => (
           <a
             class="archive-home__category"
@@ -692,7 +936,6 @@ function renderLocation(
             <p>
               {category.detail}
             </p>
-
             <span class="archive-home__category-access">
               OPEN RECORDS →
             </span>
@@ -709,7 +952,6 @@ function renderLocation(
           </div>
 
           <div class="archive-home__featured">
-
             {home.featured.map((record) => (
               <a
                 class="archive-home__featured-record"
@@ -724,7 +966,6 @@ function renderLocation(
                 <strong>
                   {record.title}
                 </strong>
-
                 <small>
                   {record.detail}
                 </small>
@@ -746,7 +987,6 @@ function renderLocation(
 const BlackDogsDossier: QuartzComponent = ({
   fileData,
 }: QuartzComponentProps) => {
-
   const frontmatter =
     fileData.frontmatter as
       | Record<string, unknown>
@@ -773,10 +1013,35 @@ const BlackDogsDossier: QuartzComponent = ({
     frontmatter.mech as
       | MechData
       | undefined
-
   if (mech) {
     return renderMech(
       mech,
+      frontmatter,
+      fileData.slug,
+    )
+  }
+
+  const ship =
+    frontmatter.ship as
+      | ShipData
+      | undefined
+
+  if (ship) {
+    return renderShip(
+      ship,
+      frontmatter,
+      fileData.slug,
+    )
+  }
+
+  const faction =
+    frontmatter.faction as
+      | FactionData
+      | undefined
+
+  if (faction) {
+    return renderFaction(
+      faction,
       frontmatter,
       fileData.slug,
     )
@@ -809,7 +1074,6 @@ if (home) {
 }
   return null
 }
-
 
 const BlackDogsDossierConstructor:
   QuartzComponentConstructor = () =>

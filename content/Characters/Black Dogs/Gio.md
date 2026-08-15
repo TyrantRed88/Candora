@@ -1,5 +1,5 @@
 ---
-title: Arcus Blackwater
+title: Gio
 
 tags:
   - characters
@@ -11,21 +11,21 @@ cssclasses:
   - operator
 
 operator:
-  name: Arcus Blackwater
-  callsign: TEMPLE
-  class: Cleric
-  species: Human
-  rank: Commander
+  name: Gio
+  callsign: CYPHER
+  class: Recon
+  species: Khelgari
+  rank: Operator
   organization: Black Dogs PMC
-  ship: "[[Ships/Black-Dogs/Dawnchaser]]"
-  mech: "[[Mechs/Praetorian]]"
+  ship: Dawnchaser
+  mech: "[[Mechs/Intervention]]"
   status: Active
-  portrait: images/characters/arcus-headshot.png
-  badge: images/characters/arcus-badge.png
+  portrait: images/characters/gio-headshot.png
+  badge: images/characters/gio-badge.png
 ---
 ## OVERVIEW
 
-The Commander of the [[Black Dogs|Black Dogs]]. 
+Operator and Operations Officer of the [[Black Dogs|Black Dogs]]. 
 ### HISTORY
 
 ### PERSONALITY
@@ -48,19 +48,19 @@ When "One Banner, Many People" supplies the Effect die, create or step up an app
 
 | Attribute | Die |
 | --------- | --- |
-| Strength  | d10 |
-| Dex       | d6  |
+| Strength  | d6  |
+| Dex       | d10 |
 | Con       | d8  |
 | Int       | d8  |
-| Wis       | d6  |
-| Cha       | d10 |
+| Wis       | d10 |
+| Cha       | d6  |
 ### APPROACHES
 
 | Approach      | Die |
 | ------------- | --- |
-| Forceful      | d10 |
+| Forceful      | d6  |
 | Subtle        | d8  |
 | Inventive     | d6  |
-| Collaborative | d8  |
-| Evasive       | d6  |
-| Methodical    | d6  |
+| Collaborative | d6  |
+| Evasive       | d10 |
+| Methodical    | d8  |

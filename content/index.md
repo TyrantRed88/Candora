@@ -13,7 +13,7 @@ home:
     - label: Command Personnel
       title: Arcus Blackwater
       detail: TEMPLE // Commander
-      target: Characters/Arcus
+      target: Characters/Black-Dogs/Arcus
 
     - label: Combat Frame
       title: BDO01-Praetorian

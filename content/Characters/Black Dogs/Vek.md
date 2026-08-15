@@ -26,7 +26,7 @@ operator:
 
 ## Overview
 
-Vek is an asshole. He is a Specialist who works for [[Arcus|Commander Arcus]], begrudgingly. 
+A Specialist currently in the employ of the [[Factions/Black Dogs|Black Dogs PMC]].
 ### History
 
 ### Personality
