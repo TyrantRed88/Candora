@@ -526,31 +526,31 @@ function renderHome(home, frontmatter, slug) {
       code: "01",
       title: "Operators",
       detail: "Personnel records, assignments, and field identities.",
-      target: "Characters"
+      target: "characters"
     },
     {
       code: "02",
       title: "Mechs",
       detail: "Combat frames, systems, deployments, and technical records.",
-      target: "Mechs"
+      target: "mechs"
     },
     {
       code: "03",
       title: "Ships",
       detail: "Naval assets, support craft, and fleet intelligence.",
-      target: "Ships"
+      target: "ships"
     },
     {
       code: "04",
       title: "Factions",
       detail: "Governments, corporations, militaries, faiths, and organizations.",
-      target: "Factions"
+      target: "factions"
     },
     {
       code: "05",
       title: "Locations",
       detail: "Planets, stations, systems, sectors, and strategic sites.",
-      target: "Locations"
+      target: "locations"
     }
   ];
   return /* @__PURE__ */ jsxs("section", { class: "black-dogs-dossier archive-home", children: [
